@@ -1,19 +1,22 @@
 Prot2Func: Predicting Enzyme Function from Protein Sequences
 
-Prot2Func is a machine learning project that attempts to classify whether a given protein sequence is an enzyme or not, using only its amino acid composition.
+Prot2Func is a machine learning project that explores the feasibility of predicting enzymatic activity (enzyme vs. non-enzyme) from protein sequences using only their amino acid composition.
+
+⸻
+
+Background
+
+Predicting whether a protein acts as an enzyme is a fundamental problem in computational biology, with applications in drug discovery, metabolic engineering, and synthetic biology. This project attempts a first-principles approach using amino acid composition as a basic feature set.
 
 ⸻
 
 Dataset
-
-I start with a subset of 500 protein sequences sampled from the UniProt Swiss-Prot database. Each protein is a string of amino acids (e.g., "MVKVGVNGFGRIGRL...").
-
-To label whether a protein is an enzyme, I query the UniProt REST API using its ID and check for a Catalytic Activity (EC number) in the metadata.
-This gives a binary label:
+	•	Source: Subset of 500 proteins from the UniProt Swiss-Prot database
+	•	Representation: Each protein is a string of amino acids (e.g., "MVKVGVNGFGRIGRL...")
+	•	Labeling: Proteins were queried via the UniProt REST API for Catalytic Activity (EC Number) to assign binary labels:
 	•	1 → Enzyme
 	•	0 → Non-enzyme
-
-Class distribution:
+	•	Class Distribution:
 	•	Enzymes: 140
 	•	Non-enzymes: 360
 
@@ -21,8 +24,7 @@ Class distribution:
 
 Feature Engineering
 
-I compute the amino acid composition of each protein:
-For each of the 20 standard amino acids, I calculated its relative frequency in the sequence.
+Protein sequences were featurized using amino acid composition—a simple 20-dimensional vector representing the relative frequency of each standard amino acid.
 
 from collections import Counter
 
@@ -40,30 +42,32 @@ Models Trained
 
 1. Logistic Regression (Sklearn)
 	•	Input: 20-dimensional amino acid frequency vector
-	•	Output: binary enzyme classification
 	•	Performance:
 	•	Accuracy: 84%
 	•	Precision (Enzyme): 0.00
 	•	Recall (Enzyme): 0.00
-	•	Note: The model completely failed to predict any enzymes, likely due to class imbalance
+	•	Observation: Strong class imbalance led to a degenerate classifier (predicting all as non-enzymes).
 
 2. Feedforward Neural Network (PyTorch)
 	•	Architecture:
 	•	Input layer: 20 features
-	•	2 hidden layers (ReLU activation)
+	•	Two hidden layers (ReLU)
 	•	Output: 2 logits (enzyme vs non-enzyme)
 	•	Loss Function: CrossEntropyLoss
 	•	Epochs: 20
 	•	Performance:
 	•	Accuracy: 21%
 	•	Precision: 16%
-	•	Recall: 100% (predicted everything as enzyme)
+	•	Recall: 100% (predicts all as enzyme)
 	•	F1 Score: 28%
 
 ⸻
 
-Key Learnings
-	•	Protein function cannot be accurately predicted from composition alone in this dataset.
-	•	The model overfits to the dominant class or makes degenerate predictions (e.g., classifies everything as enzyme).
-	•	Labeling enzyme functionality via UniProt API works but is noisy, limited, and results in imbalanced data.
-	•	There is significant potential in modeling raw protein sequences with more expressive architectures (e.g., CNNs, transformers, embeddings like ESM or ProtBERT).
+Challenges & Key Learnings
+	•	Protein function is not linearly separable by amino acid composition alone.
+	•	The dataset suffers from label imbalance and potential noise in UniProt annotations.
+	•	Even small neural networks overfit or collapse into trivial predictions under these conditions.
+	•	There is significant potential in exploring sequence-aware models like:
+	•	Convolutional Neural Networks (CNNs)
+	•	Transformers (e.g., ProtBERT, ESM)
+	•	Embedding-based representations
