@@ -2,6 +2,8 @@ Prot2Func: Predicting Enzyme Function from Protein Sequences
 
 Prot2Func is a machine learning project that explores the feasibility of predicting enzymatic activity (enzyme vs. non-enzyme) from protein sequences using only their amino acid composition.
 
+Update: This was an early experimental attempt at protein function prediction using shallow models. The results were modest, but the goal was to test data preprocessing and pipeline logic. I plan to improve performance in future iterations with attention-based architectures or pretrained embeddings
+
 Background:
 
 Predicting whether a protein acts as an enzyme is a fundamental problem in computational biology, with applications in drug discovery, metabolic engineering, and synthetic biology. This project attempts a first-principles approach using amino acid composition as a basic feature set.
