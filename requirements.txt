@@ -1,0 +1,10 @@
+# requirements.txt
+pandas
+biopython
+requests
+tqdm
+scikit-learn
+matplotlib
+seaborn
+torch
+torchmetrics
