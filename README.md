@@ -1,4 +1,4 @@
-# Enzyme Classification from Protein Sequences
+# Prot2Func: Enzyme Classification from Protein Sequences
 
 This project develops a machine learning model to predict whether a given protein is an enzyme based solely on its amino acid sequence. The workflow involves fetching and labeling data from the UniProt database, engineering features based on amino acid composition, and training a neural network with PyTorch to perform the classification.
 
