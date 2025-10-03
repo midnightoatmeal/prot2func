@@ -1,68 +1,76 @@
-Prot2Func: Predicting Enzyme Function from Protein Sequences
+# Enzyme Classification from Protein Sequences
 
-Prot2Func is a machine learning project that explores the feasibility of predicting enzymatic activity (enzyme vs. non-enzyme) from protein sequences using only their amino acid composition.
+This project develops a machine learning model to predict whether a given protein is an enzyme based solely on its amino acid sequence. The workflow involves fetching and labeling data from the UniProt database, engineering features based on amino acid composition, and training a neural network with PyTorch to perform the classification.
 
-Update: This was an early experimental attempt at protein function prediction using shallow models. The results were modest, but the goal was to test data preprocessing and pipeline logic. I plan to improve performance in future iterations with attention-based architectures or pretrained embeddings
+A key challenge in this project was handling a significant class imbalance, which was overcome using a weighted loss function to train a high-performing and balanced classifier.
 
-Background:
+***
 
-Predicting whether a protein acts as an enzyme is a fundamental problem in computational biology, with applications in drug discovery, metabolic engineering, and synthetic biology. This project attempts a first-principles approach using amino acid composition as a basic feature set.
+## Features
 
+-   **Automated Data Labeling**: Programmatically queries the UniProt REST API to label proteins as "Enzyme" or "Non-Enzyme".
+-   **Feature Engineering**: Converts raw protein sequences into numerical features based on amino acid frequency.
+-   **Machine Learning Models**: Implements and compares a Logistic Regression baseline with a PyTorch-based neural network.
+-   **Handling Imbalance**: Successfully addresses class imbalance to build a useful and predictive model.
+-   **Jupyter Notebook**: A clean, step-by-step notebook (`main_prot2func_model.ipynb`) documents the entire process from data loading to model evaluation.
 
-Dataset:
-	•	Source: Subset of 500 proteins from the UniProt Swiss-Prot database
-	•	Representation: Each protein is a string of amino acids (e.g., "MVKVGVNGFGRIGRL...")
-	•	Labeling: Proteins were queried via the UniProt REST API for Catalytic Activity (EC Number) to assign binary labels:
-	•	1 → Enzyme
-	•	0 → Non-enzyme
-	•	Class Distribution:
-	•	Enzymes: 140
-	•	Non-enzymes: 360
+***
 
+##� Workflow Overview
 
-Feature Engineering:
+1.  **Data Loading**: Protein sequence data is loaded from `protein_sequences.csv`.
+2.  **API Labeling**: A subset of the data is labeled by querying UniProt to identify proteins with catalytic activity (EC numbers).
+3.  **Feature Engineering**: The 20 standard amino acid frequencies are calculated for each sequence to serve as model features.
+4.  **Model Training**: The data is split into training and testing sets. A PyTorch neural network is trained using a weighted cross-entropy loss to handle class imbalance.
+5.  **Evaluation**: The trained model is evaluated on the unseen test set to measure its accuracy, precision, and recall.
 
-Protein sequences were featurized using amino acid composition—a simple 20-dimensional vector representing the relative frequency of each standard amino acid.
+***
 
-from collections import Counter
+## Installation & Setup
 
-AMINO_ACIDS = "ACDEFGHIKLMNPQRSTVWY"
+To run this project locally, please follow these steps.
 
-def aa_composition(seq):
-    count = Counter(seq)
-    total = len(seq)
-    return [count.get(aa, 0) / total for aa in AMINO_ACIDS]
+1.  **Clone the Repository**
+    ```bash
+    git clone https://github.com/midnightoatmeal/prot2func
+    cd prot2func
+    ```
 
+2.  **Create and Activate a Virtual Environment**
+    ```bash
+    # Create the environment
+    python3 -m venv venv
 
-Models Trained:
+    # Activate it (macOS/Linux)
+    source venv/bin/activate
 
-1. Logistic Regression (Sklearn)
-	•	Input: 20-dimensional amino acid frequency vector
-	•	Performance:
-	•	Accuracy: 84%
-	•	Precision (Enzyme): 0.00
-	•	Recall (Enzyme): 0.00
-	•	Observation: Strong class imbalance led to a degenerate classifier (predicting all as non-enzymes).
+    # Activate it (Windows)
+    .\venv\Scripts\activate
+    ```
 
-2. Feedforward Neural Network (PyTorch)
-	•	Architecture:
-	•	Input layer: 20 features
-	•	Two hidden layers (ReLU)
-	•	Output: 2 logits (enzyme vs non-enzyme)
-	•	Loss Function: CrossEntropyLoss
-	•	Epochs: 20
-	•	Performance:
-	•	Accuracy: 21%
-	•	Precision: 16%
-	•	Recall: 100% (predicts all as enzyme)
-	•	F1 Score: 28%
+3.  **Install Dependencies**
+    Install all the required Python libraries from the `requirements.txt` file.
+    ```bash
+    pip install -r requirements.txt
+    ```
 
+***
 
-Challenges & Key Learnings
-	•	Protein function is not linearly separable by amino acid composition alone.
-	•	The dataset suffers from label imbalance and potential noise in UniProt annotations.
-	•	Even small neural networks overfit or collapse into trivial predictions under these conditions.
-	•	There is significant potential in exploring sequence-aware models like:
-	•	Convolutional Neural Networks (CNNs)
-	•	Transformers (e.g., ProtBERT, ESM)
-	•	Embedding-based representations
+## Usage
+
+All the code and analysis are contained within the Jupyter Notebook:
+`main_prot2func_model.ipynb`
+
+Simply open the notebook in a Jupyter environment (like Jupyter Lab or VS Code) and run the cells sequentially from top to bottom.
+
+***
+
+## Results & Performance
+
+The initial challenge was a significant class imbalance, where a naive model completely failed to identify the minority class (enzymes), resulting in a precision and recall of **0.00**.
+
+After implementing a weighted loss function and other improvements, the final PyTorch neural network achieved excellent, well-balanced performance on the test set:
+
+-   **Accuracy:** 87.25%
+-   **Precision (for Enzymes):** 87.25%
+-   **Recall (for Enzymes):** 87.25%
