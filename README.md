@@ -16,7 +16,7 @@ A key challenge in this project was handling a significant class imbalance, whic
 
 ***
 
-##� Workflow Overview
+### Workflow Overview
 
 1.  **Data Loading**: Protein sequence data is loaded from `protein_sequences.csv`.
 2.  **API Labeling**: A subset of the data is labeled by querying UniProt to identify proteins with catalytic activity (EC numbers).
